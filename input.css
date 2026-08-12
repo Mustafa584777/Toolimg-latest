@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-sans: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+                    }
+
+/* White logo image in dark theme */
+.dark img[src*="logo.png"],
+.dark img[alt*="ToolIMG Logo"],
+.dark img[alt*="Logo"],
+.dark .logo-img {
+  filter: brightness(0) invert(1) !important;
+}
+

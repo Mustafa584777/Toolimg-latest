@@ -1,0 +1,32 @@
+{
+  "name": "vanilla-ocr-tool",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node --experimental-strip-types server.ts",
+    "build": "vite build && cp output.css dist/ && cp style.css dist/ 2>/dev/null && cp firebase-applet-config.json dist/ 2>/dev/null && cp sitemap.xml dist/ 2>/dev/null && cp robots.txt dist/ 2>/dev/null && cp .htaccess dist/ 2>/dev/null || true",
+    "start": "node server.ts",
+    "clean": "rm -rf dist",
+    "lint": "echo 'No linting required'"
+  },
+  "dependencies": {
+    "@google/genai": "^2.10.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "firebase-admin": "^14.2.0",
+    "razorpay": "^2.9.6",
+    "vite": "^6.2.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.0.1",
+    "tailwindcss": "^4.3.3"
+  },
+  "description": "",
+  "main": "combined.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

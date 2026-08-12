@@ -1,0 +1,57 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "User profile with registration details and credits balance",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "joinedAt": { "type": "string" },
+        "credits": { "type": "number" }
+      },
+      "required": ["email", "joinedAt"]
+    },
+    "Guest": {
+      "title": "Guest Profile",
+      "description": "Guest profile with credits and usage statistics",
+      "type": "object",
+      "properties": {
+        "credits": { "type": "number" },
+        "creditsUsed_imageToCode": { "type": "number" },
+        "creditsUsed_handwritingToText": { "type": "number" }
+      },
+      "required": ["credits"]
+    },
+    "History": {
+      "title": "Conversion History Item",
+      "description": "Saved conversion history for tools",
+      "type": "object",
+      "properties": {
+        "toolId": { "type": "string" },
+        "toolName": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "previewUrl": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "userId": { "type": "string" }
+      },
+      "required": ["toolId", "toolName", "content", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile documents"
+    },
+    "/users/{userId}/history/{historyId}": {
+      "schema": "History",
+      "description": "User history items"
+    },
+    "/guests/{guestId}": {
+      "schema": "Guest",
+      "description": "Guest session documents"
+    }
+  }
+}
