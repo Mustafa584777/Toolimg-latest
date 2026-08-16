@@ -2,12 +2,8 @@
 <html lang="en">
 <head>
     <script>
-    if (localStorage.theme === 'dark') {
-        document.documentElement.classList.add('dark')
-    } else {
-        document.documentElement.classList.remove('dark')
-        localStorage.theme = 'light';
-    }
+    document.documentElement.classList.remove('dark');
+    localStorage.theme = 'light';
     </script>
     <script>
     // Universal circular JSON safety polyfill to prevent platform logging and 3rd party crashes
@@ -5270,12 +5266,8 @@
 
             // Theme setting function
             window.setTheme = function(theme) {
-                localStorage.theme = theme;
-                if (theme === 'dark') {
-                    document.documentElement.classList.add('dark');
-                } else {
-                    document.documentElement.classList.remove('dark');
-                }
+                localStorage.theme = 'light';
+                document.documentElement.classList.remove('dark');
             };
 
             // Mobile Menu Modal Toggle Logic
@@ -5334,13 +5326,8 @@
             const themeBtn = document.getElementById('theme-btn');
             if (themeBtn) {
                 themeBtn.addEventListener('click', () => {
-                    if (document.documentElement.classList.contains('dark')) {
-                        document.documentElement.classList.remove('dark');
-                        localStorage.theme = 'light';
-                    } else {
-                        document.documentElement.classList.add('dark');
-                        localStorage.theme = 'dark';
-                    }
+                    document.documentElement.classList.remove('dark');
+                    localStorage.theme = 'light';
                 });
             }
         });

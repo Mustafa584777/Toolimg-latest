@@ -16,6 +16,7 @@ export default defineConfig(() => {
       rollupOptions: {
         input: {
           main: resolve(__dirname, 'index.html'),
+          geminiImageToPrompt: resolve(__dirname, 'tools/gemini-image-to-prompt/index.html'),
           imageToCode: resolve(__dirname, 'tools/image-to-code/index.html'),
           handwritingToText: resolve(__dirname, 'tools/handwriting-to-text/index.html'),
           hindiHandwritingToText: resolve(__dirname, 'tools/hindi-handwriting-to-text/index.html'),
