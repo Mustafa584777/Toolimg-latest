@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image To Prompt AI Online Free - ToolIMG</title>
+    <meta name="description" content="Free AI Image to Prompt Generator for ToolIMG.online. Reverse engineer Midjourney, Stable Diffusion, DALL-E, and Flux prompts from any image.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Space Grotesk"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom Styling & Base Overrides -->
+    <style>
+        * {
+            font-family: "Space Grotesk", sans-serif !important;
+        }
+        body {
+            background-color: #fafafa;
+            color: #000000;
+        }
+        pre, code, .font-mono {
+            font-family: "JetBrains Mono", monospace !important;
+        }
+        /* Universal 4px Border Radius Override to match ToolIMG's style guide */
+        .rounded-none, 
+        [class*="rounded-none"] {
+            border-radius: 4px !important;
+        }
+        button:not(.rounded-full), 
+        input:not(.rounded-full), 
+        select:not(.rounded-full), 
+        textarea:not(.rounded-full), 
+        header:not(.rounded-full), 
+        nav:not(.rounded-full), 
+        .card:not(.rounded-full) {
+            border-radius: 4px !important;
+        }
+
+        /* Loading progress animation pulse */
+        @keyframes shimmer {
+            100% { transform: translateX(100%); }
+        }
+        .shimmer-progress {
+            position: relative;
+            overflow: hidden;
+        }
+        .shimmer-progress::after {
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            transform: translateX(-100%);
+            background-image: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.3) 20%,
+                rgba(255, 255, 255, 0.6) 60%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            animation: shimmer 1.5s infinite;
+            content: '';
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+
+    <!-- Google Translate Container -->
+    <div id="google_translate_element" style="display: none;"></div>
+
+    <!-- Header Navbar -->
+    <header class="w-full max-w-[85vw] mx-auto px-4 sm:px-6 py-4 flex justify-between items-center bg-white/95 backdrop-blur-md sticky top-4 z-40 shadow-sm border border-gray-200 mb-8 transition-colors">
+        <div class="flex items-center gap-2 w-full justify-between">
+            <!-- Logo -->
+            <a href="/" class="flex items-center gap-2" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
+                <img src="https://timetablecreator.online/blog/wp-content/uploads/2026/08/logo.png" alt="ToolIMG Logo" class="h-8 w-auto">
+                <span class="font-bold text-xl tracking-tight text-black">Tool<span class="text-black">IMG</span></span>
+            </a>
+            
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="/" class="text-[15px] font-semibold text-gray-700 hover:text-black transition">Home</a>
+                <a href="/tools/" class="text-[15px] font-semibold text-gray-700 hover:text-black transition">Tools</a>
+                <a href="/pricing/" class="px-4 py-1.5 text-[15px] font-bold bg-white text-black border border-gray-200 shadow-sm transition hover:bg-gray-100">Pricing</a>
+            </nav>
+            
+            <!-- Quick Actions & Auth Controls -->
+            <div class="flex items-center gap-3">
+                <!-- Language Menu -->
+                <div class="relative">
+                    <button id="lang-menu-btn" type="button" onclick="toggleLangMenu(event)" class="p-2 hover:bg-gray-100 rounded-none border border-gray-200 transition flex items-center justify-center cursor-pointer bg-transparent" aria-label="Select Language">
+                        <svg class="w-5 h-5 text-gray-500 bg-transparent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 8l6 6"></path>
+                            <path d="M4 14l6-6 2-3"></path>
+                            <path d="M2 5h12"></path>
+                            <path d="M7 2h1"></path>
+                            <path d="M22 22l-5-10-5 10"></path>
+                            <path d="M14 18h6"></path>
+                        </svg>
+                    </button>
+                    <!-- Language Popover Dropdown -->
+                    <div id="lang-popover" class="hidden absolute right-0 top-full mt-2 w-48 bg-white rounded-none shadow-2xl flex-col z-[100] overflow-hidden py-1.5 border border-gray-200">
+                        <button type="button" onclick="switchLang('en')" class="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 text-gray-700 font-medium">English (EN)</button>
+                        <button type="button" onclick="switchLang('es')" class="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 text-gray-700 font-medium">Español (ES)</button>
+                        <button type="button" onclick="switchLang('fr')" class="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 text-gray-700 font-medium">Français (FR)</button>
+                        <button type="button" onclick="switchLang('de')" class="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 text-gray-700 font-medium">Deutsch (DE)</button>
+                        <button type="button" onclick="switchLang('hi')" class="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 text-gray-700 font-medium">हिन्दी (HI)</button>
+                    </div>
+                </div>
+
+                <!-- Credit Display -->
+                <a href="/pricing/" id="credits-display" class="flex items-center gap-1.5 bg-transparent text-gray-700 text-xs font-bold px-2.5 py-1.5 rounded-none cursor-pointer hover:bg-gray-100 transition border border-gray-200" style="text-decoration: none;">
+                    <svg class="w-3.5 h-3.5 text-gray-500 bg-transparent shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M6 3h12l4 6-10 13L2 9z"/>
+                    </svg>
+                    <span id="credits-count" class="leading-none mt-[0.5px]">5</span>
+                </a>
+
+                <!-- Desktop Guest Auth -->
+                <div id="header-auth-guest" class="hidden md:flex items-center gap-2">
+                    <button onclick="handleLogin()" class="px-4 py-2 text-[15px] font-medium text-gray-700 hover:bg-gray-100 rounded-none border border-gray-200 transition cursor-pointer bg-transparent">Log in</button>
+                    <button onclick="handleLogin()" class="px-4 py-2 text-[15px] font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-none transition border border-gray-300 shadow-sm cursor-pointer">Sign up</button>
+                </div>
+
+                <!-- Desktop Authenticated Auth -->
+                <div id="user-menu" class="hidden relative items-center">
+                    <button id="user-avatar-btn" type="button" onclick="toggleUserDropdown(event)" class="w-8 h-8 sm:w-9 sm:h-9 rounded-none overflow-hidden shadow-sm border border-gray-200 transition-transform active:scale-95 bg-gray-100 flex items-center justify-center text-gray-700 focus:outline-none cursor-pointer font-bold text-xs">
+                        <img id="user-avatar" src="" alt="User" class="w-full h-full object-cover hidden" referrerpolicy="no-referrer" crossorigin="anonymous">
+                        <div id="user-fallback" class="flex items-center justify-center">
+                            <svg class="w-4 h-4 text-gray-500 bg-transparent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                        </div>
+                    </button>
+                    <div id="user-dropdown" class="hidden absolute right-0 top-full mt-3.5 w-48 bg-white rounded-none shadow-2xl flex flex-col z-[100] overflow-hidden py-1.5 border border-gray-200">
+                        <div class="px-4 py-2 border-b border-gray-100">
+                            <p id="user-name" class="text-xs font-bold text-black truncate"></p>
+                        </div>
+                        <button onclick="openHistoryDrawer()" class="w-full text-left flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition cursor-pointer">
+                            <svg class="w-4 h-4 text-gray-500 bg-transparent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span>History</span>
+                        </button>
+                        <div class="h-px bg-gray-200 my-1" />
+                        <button onclick="handleLogout()" class="w-full text-left flex items-center gap-2.5 px-4 py-2 text-sm text-rose-600 hover:bg-rose-50 transition cursor-pointer bg-transparent">
+                            <svg class="w-4 h-4 text-gray-500 bg-transparent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                            </svg>
+                            <span>Logout</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mobile Burger Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden p-2 text-gray-500 hover:text-black hover:bg-gray-100 rounded-none border border-gray-200 transition ml-1 cursor-pointer bg-transparent" aria-label="Open Mobile Menu">
+                    <svg class="w-6 h-6 text-gray-500 bg-transparent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer Modal -->
+    <div id="mobile-menu-modal" class="fixed inset-0 z-50 hidden flex-col items-center justify-center p-4">
+        <div id="mobile-menu-backdrop" class="absolute inset-0 bg-gray-500/10 backdrop-blur-sm"></div>
+        <div id="mobile-menu-content" class="relative w-full max-w-[340px] bg-white rounded-none shadow-2xl overflow-visible border border-gray-200 z-10">
+            <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+                <a href="/" class="flex items-center gap-2">
+                    <img src="https://timetablecreator.online/blog/wp-content/uploads/2026/08/logo.png" alt="ToolIMG Logo" class="h-7 w-auto logo-img">
+                    <span class="font-bold text-lg text-black tracking-tight">Tool<span class="text-black">IMG</span></span>
+                </a>
+                <button id="mobile-menu-close" class="text-slate-400 hover:text-gray-600 transition p-1 rounded-none hover:bg-gray-50 cursor-pointer" aria-label="Close Mobile Menu">
+                    <svg class="w-5 h-5 text-gray-500 bg-transparent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="px-3 py-4 flex flex-col gap-1">
+                <a href="/" class="px-4 py-3 text-[15px] font-semibold text-gray-700 hover:bg-gray-100">Home</a>
+                <a href="/tools/" class="px-4 py-3 text-[15px] font-semibold text-gray-700 hover:bg-gray-100">Tools</a>
+                <a href="/pricing/" class="px-4 py-3 text-[15px] font-semibold text-gray-700 hover:bg-gray-100">Pricing</a>
+                <div class="h-px bg-gray-200 w-full my-2" />
+                <div id="mobile-auth-guest" class="flex flex-col gap-2 px-3 mt-2">
+                    <button onclick="handleLogin()" class="w-full py-2.5 text-center text-sm font-semibold text-gray-700 border border-gray-200 bg-transparent">Log in</button>
+                    <button onclick="handleLogin()" class="w-full py-2.5 text-center text-sm font-bold text-gray-700 bg-gray-100 hover:bg-gray-200 border border-gray-300">Sign up</button>
+                </div>
+                <div id="mobile-auth-user" class="hidden flex-col gap-2 px-3 mt-2">
+                    <button onclick="openHistoryDrawer(); toggleMobileMenu();" class="w-full py-2.5 text-center text-sm font-bold text-gray-700 border border-gray-200 bg-transparent">History</button>
+                    <button onclick="handleLogout()" class="w-full py-2.5 text-center text-sm font-bold text-rose-600 border border-rose-200 hover:bg-rose-50 bg-transparent">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-[85vw] mx-auto w-full px-4 sm:px-6 py-6 md:py-10 flex flex-col">
+        
+        <!-- Intro Hero Section -->
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-gray-100 text-gray-700 text-xs font-bold uppercase tracking-wider mb-4 border border-gray-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Gemini 2.5 Powered Engine</span>
+            </div>
+            <h1 class="text-3xl md:text-5xl font-black text-black tracking-tight mb-4 leading-none">
+                Image to Prompt AI Generator
+            </h1>
+            <p class="text-[15px] sm:text-[17px] text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                Upload any picture, art, sketch, or photograph to reverse engineer detailed, production-ready prompt formulas for Midjourney, Stable Diffusion, DALL-E, and FLUX.
+            </p>
+        </div>
+
+        <!-- Dashboard Layout Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- Left Grid Panel: Upload and Configurations -->
+            <div class="lg:col-span-5 bg-white border border-gray-200 p-6 shadow-sm flex flex-col gap-6">
+                
+                <!-- Section Header -->
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-mono uppercase tracking-[0.15em] text-gray-500">Step 1: Input Setup</span>
+                    <button id="clear-upload-btn" onclick="clearSelectedImage()" class="text-xs font-bold text-rose-500 hover:text-rose-600 transition flex items-center gap-1 cursor-pointer bg-transparent hidden">
+                        Clear Image
+                    </button>
+                </div>
+
+                <!-- File Drag & Drop Upload Zone -->
+                <div id="drop-zone" class="border-2 border-dashed border-gray-200 hover:border-gray-400 transition-all p-8 flex flex-col items-center justify-center text-center cursor-pointer bg-[#fafafa] group min-h-[220px]">
+                    <input type="file" id="image-file-input" class="hidden" accept="image/*" onchange="handleFileSelect(event)">
+                    
+                    <div id="upload-prompt-container" class="flex flex-col items-center justify-center">
+                        <div class="w-12 h-12 rounded-none bg-transparent group-hover:scale-110 transition flex items-center justify-center mb-3 text-gray-400 border border-gray-200">
+                            <svg class="w-6 h-6 text-gray-400 bg-transparent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                            </svg>
+                        </div>
+                        <p class="text-sm font-bold text-black mb-1">Drag and drop your image, or click to browse</p>
+                        <p class="text-xs text-gray-400">Supports PNG, JPG, JPEG, WEBP</p>
+                    </div>
+
+                    <!-- Live Preview Panel -->
+                    <div id="upload-preview-container" class="relative border border-gray-200 bg-[#fafafa] p-2 overflow-hidden hidden w-full">
+                        <div class="relative w-full h-56 bg-gray-100 flex items-center justify-center overflow-hidden">
+                            <img id="upload-preview-img" src="" alt="Selected Preview" class="max-w-full max-h-full object-contain" />
+                            <button onclick="clearSelectedImage(event)" class="absolute top-2 right-2 bg-white/80 hover:bg-white text-gray-500 p-1.5 rounded-none shadow-sm transition border border-gray-200">
+                                <svg class="w-4 h-4 text-gray-500 bg-transparent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="mt-2.5 flex items-center justify-between text-[11px] text-gray-500 font-medium px-1">
+                            <span id="preview-file-name" class="truncate max-w-[150px]">image.png</span>
+                            <span id="preview-file-size">0 KB</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Presets Quick Tester Selector -->
+                <div>
+                    <span class="block text-xs font-mono uppercase tracking-[0.15em] text-gray-500 mb-2.5">Try with immediate sample presets:</span>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4 gap-2">
+                        <div onclick="loadPreset(0)" class="group relative border border-gray-200 bg-white p-1 hover:border-black transition flex flex-col items-center text-center cursor-pointer">
+                            <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?w=150&auto=format&fit=crop&q=80" alt="Preset Cyberpunk" class="w-full h-14 object-cover mb-1 rounded-none" />
+                            <span class="text-[10px] font-bold text-gray-800 leading-none py-1">Cyberpunk</span>
+                        </div>
+                        <div onclick="loadPreset(1)" class="group relative border border-gray-200 bg-white p-1 hover:border-black transition flex flex-col items-center text-center cursor-pointer">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" alt="Preset Portrait" class="w-full h-14 object-cover mb-1 rounded-none" />
+                            <span class="text-[10px] font-bold text-gray-800 leading-none py-1">Portrait</span>
+                        </div>
+                        <div onclick="loadPreset(2)" class="group relative border border-gray-200 bg-white p-1 hover:border-black transition flex flex-col items-center text-center cursor-pointer">
+                            <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=150&auto=format&fit=crop&q=80" alt="Preset Fantasy" class="w-full h-14 object-cover mb-1 rounded-none" />
+                            <span class="text-[10px] font-bold text-gray-800 leading-none py-1">Fantasy</span>
+                        </div>
+                        <div onclick="loadPreset(3)" class="group relative border border-gray-200 bg-white p-1 hover:border-black transition flex flex-col items-center text-center cursor-pointer">
+                            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&auto=format&fit=crop&q=80" alt="Preset Cozy Room" class="w-full h-14 object-cover mb-1 rounded-none" />
+                            <span class="text-[10px] font-bold text-gray-800 leading-none py-1">Cozy Room</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Divider line -->
+                <div class="h-px bg-gray-100" />
+
+                <!-- Target Model Selection -->
+                <div>
+                    <span class="block text-xs font-mono uppercase tracking-[0.15em] text-gray-500 mb-2">Target Image Engine</span>
+                    <select id="target-model-select" class="w-full bg-[#fafafa] border border-gray-200 text-black px-3 py-2 text-xs font-medium focus:outline-none focus:border-gray-400 transition" onchange="updateTargetModel(this.value)">
+                        <option value="midjourney">Midjourney v6 (--v 6.0 standard parameters)</option>
+                        <option value="stable-diffusion">Stable Diffusion XL (Weighted syntax tags)</option>
+                        <option value="dalle3">DALL-E 3 (Cohesive natural scenes)</option>
+                        <option value="flux">FLUX.1 (Flow matching directives)</option>
+                        <option value="photorealistic">Photorealistic (ISO / Lens specs)</option>
+                        <option value="anime">Anime & Manga (Illustration art rules)</option>
+                        <option value="3d-render">3D Render & CGI (Octane Engine specs)</option>
+                    </select>
+                </div>
+
+                <!-- Prompt Detail Slider -->
+                <div>
+                    <span class="block text-xs font-mono uppercase tracking-[0.15em] text-gray-500 mb-2.5">Prompt Detail Level</span>
+                    <div class="grid grid-cols-3 gap-1.5 mb-3 bg-gray-100 p-1 border border-gray-200">
+                        <button onclick="setDetailLevel('concise')" id="dl-btn-concise" class="py-1.5 text-xs font-bold bg-transparent text-gray-500 transition cursor-pointer">
+                            Concise
+                        </button>
+                        <button onclick="setDetailLevel('balanced')" id="dl-btn-balanced" class="py-1.5 text-xs font-bold bg-white text-black shadow-sm border border-gray-200 transition cursor-pointer">
+                            Balanced
+                        </button>
+                        <button onclick="setDetailLevel('exhaustive')" id="dl-btn-exhaustive" class="py-1.5 text-xs font-bold bg-transparent text-gray-500 transition cursor-pointer">
+                            Exhaustive
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Custom Instructions / Constraints -->
+                <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-xs font-mono uppercase tracking-[0.15em] text-gray-500">Custom Guidance (Optional)</span>
+                    </div>
+                    <textarea id="custom-instructions-area" rows="3" placeholder="e.g. 'focus on portrait expression', 'remove any text overlays', 'make it look retro 1990s photography'..." class="w-full bg-[#fafafa] border border-gray-200 text-black px-3 py-2 text-xs font-medium focus:outline-none focus:border-gray-400 transition resize-y"></textarea>
+                </div>
+
+                <!-- Options / Toggle modifiers -->
+                <div>
+                    <span class="block text-xs font-mono uppercase tracking-[0.15em] text-gray-500 mb-2">Options & Modifiers</span>
+                    <div class="space-y-1.5">
+                        <label class="flex items-center justify-between p-2 border border-gray-200 hover:bg-gray-50 cursor-pointer bg-transparent">
+                            <span class="text-xs font-bold text-gray-800">Include Camera & Lens specs</span>
+                            <input type="checkbox" id="opt-camera" checked class="accent-black w-4 h-4 cursor-pointer" />
+                        </label>
+                        <label class="flex items-center justify-between p-2 border border-gray-200 hover:bg-gray-50 cursor-pointer bg-transparent">
+                            <span class="text-xs font-bold text-gray-800">Include Lighting & Mood parameters</span>
+                            <input type="checkbox" id="opt-lighting" checked class="accent-black w-4 h-4 cursor-pointer" />
+                        </label>
+                        <label class="flex items-center justify-between p-2 border border-gray-200 hover:bg-gray-50 cursor-pointer bg-transparent">
+                            <span class="text-xs font-bold text-gray-800">Tailor Negative Prompts</span>
+                            <input type="checkbox" id="opt-negative" checked class="accent-black w-4 h-4 cursor-pointer" />
+                        </label>
+                        <label class="flex items-center justify-between p-2 border border-gray-200 hover:bg-gray-50 cursor-pointer bg-transparent">
+                            <span class="text-xs font-bold text-gray-800">Extract Color Palette hexes</span>
+                            <input type="checkbox" id="opt-colors" checked class="accent-black w-4 h-4 cursor-pointer" />
+                        </label>
+                        <label class="flex items-center justify-between p-2 border border-gray-200 hover:bg-gray-50 cursor-pointer bg-transparent">
+                            <span class="text-xs font-bold text-gray-800">Add high-quality magic boosters</span>
+                            <input type="checkbox" id="opt-quality" checked class="accent-black w-4 h-4 cursor-pointer" />
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Generate Prompts Action Button -->
+                <button onclick="triggerPromptGeneration()" id="generate-prompt-btn" class="w-full py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-sm tracking-wide uppercase transition flex items-center justify-center gap-2 shadow-sm cursor-pointer border border-gray-300">
+                    <svg id="btn-spin-svg" class="animate-spin w-4 h-4 text-gray-400 bg-transparent shrink-0 hidden" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    <svg id="btn-rocket-svg" class="w-4 h-4 text-gray-400 bg-transparent shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M6 3h12l4 6-10 13L2 9z" />
+                    </svg>
+                    <span id="generate-btn-text">Generate Prompts</span>
+                </button>
+            </div>
+
+            <!-- Right Grid Panel: Interactive Prompts Output, Analysis & Breakdowns -->
+            <div class="lg:col-span-7 bg-white border border-gray-200 shadow-sm flex flex-col min-h-[580px] overflow-hidden">
+                
+                <!-- Output Header with tab controls -->
+                <div class="flex border-b border-gray-200 overflow-x-auto select-none bg-gray-50/50">
+                    <button onclick="setActiveOutputTab('prompts')" id="out-tab-prompts" class="flex-1 min-w-[100px] text-center py-4 px-3 text-xs font-black tracking-wider uppercase border-b-2 border-black bg-white text-black transition cursor-pointer">
+                        Prompts
+                    </button>
+                    <button onclick="setActiveOutputTab('breakdown')" id="out-tab-breakdown" class="flex-1 min-w-[100px] text-center py-4 px-3 text-xs font-black tracking-wider uppercase border-b-2 border-transparent text-gray-500 hover:text-black transition cursor-pointer">
+                        Breakdown
+                    </button>
+                    <button onclick="setActiveOutputTab('negative')" id="out-tab-negative" class="flex-1 min-w-[100px] text-center py-4 px-3 text-xs font-black tracking-wider uppercase border-b-2 border-transparent text-gray-500 hover:text-black transition cursor-pointer">
+                        Negative
+                    </button>
+                    <button onclick="setActiveOutputTab('tags')" id="out-tab-tags" class="flex-1 min-w-[100px] text-center py-4 px-3 text-xs font-black tracking-wider uppercase border-b-2 border-transparent text-gray-500 hover:text-black transition cursor-pointer">
+                        Keywords
+                    </button>
+                </div>
+
+                <!-- Interactive Card Body -->
+                <div class="flex-grow p-6 flex flex-col relative">
+                    
+                    <!-- INITIAL STATE LAYOUT (Empty view placeholder) -->
+                    <div id="out-state-empty" class="absolute inset-0 flex flex-col items-center justify-center p-8 text-center bg-white z-10">
+                        <div class="w-16 h-16 bg-gray-50 border border-gray-200 flex items-center justify-center mb-4 rounded-none">
+                            <svg class="w-8 h-8 text-gray-400 bg-transparent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                            </svg>
+                        </div>
+                        <h4 class="text-sm font-bold text-black mb-1">Ready for Prompt Reverse-Engineering</h4>
+                        <p class="text-xs text-gray-500 max-w-sm">
+                            Upload your design image, adjust targets, and click generate to run Gemini's structured prompt extractor.
+                        </p>
+                    </div>
+
+                    <!-- RUNNING LOADING STATE LAYOUT -->
+                    <div id="out-state-loading" class="absolute inset-0 flex flex-col items-center justify-center p-8 text-center bg-white z-20 hidden">
+                        <div class="w-20 h-20 bg-gray-100 border border-gray-200 flex items-center justify-center mb-6 relative">
+                            <span class="absolute inset-0 bg-gray-400/10 animate-ping rounded-none" />
+                            <svg class="w-8 h-8 text-gray-500 animate-pulse bg-transparent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                            </svg>
+                        </div>
+                        <span id="loading-step-tag" class="px-3 py-1 bg-gray-100 text-[10px] font-bold uppercase tracking-wider text-gray-700 mb-2 border border-gray-200">
+                            Analyzing color matrix...
+                        </span>
+                        <h4 class="text-sm font-bold text-black mb-1">Processing Image Data</h4>
+                        <p class="text-xs text-gray-500 max-w-sm mb-6 leading-relaxed">
+                            Meticulously scanning layout elements, camera mechanics, artistic medium style rules, and lighting schemes.
+                        </p>
+                        
+                        <!-- Realistic progress bar -->
+                        <div class="w-64 bg-gray-100 h-2 overflow-hidden border border-gray-200 mb-6">
+                            <div id="loading-progress-bar" class="bg-gray-400 h-full transition-all duration-300" style="width: 10%"></div>
+                        </div>
+                    </div>
+
+                    <!-- SUCCESS RESULTS CONTAINER -->
+                    <div id="out-state-success" class="flex-grow flex flex-col hidden">
+                        
+                        <!-- VIEW PANEL: PROMPTS TAB -->
+                        <div id="tab-panel-prompts" class="flex-grow flex flex-col gap-4">
+                            
+                            <!-- Prompt Sub-selector horizontal tabs -->
+                            <div class="flex flex-wrap gap-1.5 bg-gray-100 p-1 border border-gray-200">
+                                <button onclick="setActivePromptSubTab('midjourney')" id="pst-midjourney" class="flex-1 py-1 px-2.5 text-[11px] font-bold transition rounded-none bg-white text-black shadow-sm border border-gray-200 cursor-pointer">
+                                    Midjourney
+                                </button>
+                                <button onclick="setActivePromptSubTab('stableDiffusion')" id="pst-stableDiffusion" class="flex-1 py-1 px-2.5 text-[11px] font-bold transition rounded-none bg-transparent text-gray-500 hover:text-black cursor-pointer">
+                                    SDXL
+                                </button>
+                                <button onclick="setActivePromptSubTab('dalle3')" id="pst-dalle3" class="flex-1 py-1 px-2.5 text-[11px] font-bold transition rounded-none bg-transparent text-gray-500 hover:text-black cursor-pointer">
+                                    DALL-E 3
+                                </button>
+                                <button onclick="setActivePromptSubTab('flux')" id="pst-flux" class="flex-1 py-1 px-2.5 text-[11px] font-bold transition rounded-none bg-transparent text-gray-500 hover:text-black cursor-pointer">
+                                    FLUX.1
+                                </button>
+                                <button onclick="setActivePromptSubTab('photorealistic')" id="pst-photorealistic" class="flex-1 py-1 px-2.5 text-[11px] font-bold transition rounded-none bg-transparent text-gray-500 hover:text-black cursor-pointer">
+                                    Camera
+                                </button>
+                            </div>
+
+                            <!-- Title of current scene -->
+                            <div>
+                                <span class="block text-[10px] font-mono uppercase tracking-widest text-gray-400 mb-1">Detected Composition Title</span>
+                                <h3 id="result-scene-title" class="text-sm font-bold text-black border-l-2 border-black pl-2 leading-none">
+                                    Futuristic Cyberpunk Metropolis
+                                </h3>
+                            </div>
+
+                            <!-- Copiable Main Prompt Box -->
+                            <div class="flex-grow flex flex-col min-h-[220px]">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-[10px] font-mono uppercase tracking-widest text-gray-400">Generated Prompt Formula</span>
+                                    <button onclick="copyActivePrompt()" class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 text-xs font-bold flex items-center gap-1.5 shadow-sm transition cursor-pointer">
+                                        <svg class="w-3.5 h-3.5 text-gray-500 bg-transparent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                        </svg>
+                                        Copy Prompt
+                                    </button>
+                                </div>
+                                <div id="result-prompt-codebox" class="bg-white border border-gray-200 p-4 font-mono text-xs text-gray-800 leading-relaxed max-h-56 overflow-y-auto whitespace-pre-wrap select-all flex-grow">
+                                    Loading...
+                                </div>
+                            </div>
+
+                            <!-- Quick helpful advice -->
+                            <div class="bg-white border border-gray-200 p-3 flex items-start gap-2.5">
+                                <span class="text-xs">💡</span>
+                                <p class="text-[11px] text-gray-500 leading-relaxed">
+                                    For best generation outputs, copy this prompt as is. Midjourney prompts contain parameters like <code class="bg-gray-100 px-1 font-mono">--style raw</code>, while SDXL prompts use optimal tag weight triggers.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- VIEW PANEL: BREAKDOWN TAB -->
+                        <div id="tab-panel-breakdown" class="flex-grow flex flex-col gap-4 hidden">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="border border-gray-200 p-3 bg-[#fafafa]">
+                                    <span class="block text-[9px] font-mono uppercase tracking-widest text-gray-400 mb-0.5">Subject & Elements</span>
+                                    <p id="bd-subject" class="text-xs text-gray-700 leading-relaxed">Subject scan loading...</p>
+                                </div>
+                                <div class="border border-gray-200 p-3 bg-[#fafafa]">
+                                    <span class="block text-[9px] font-mono uppercase tracking-widest text-gray-400 mb-0.5">Background & Setting</span>
+                                    <p id="bd-background" class="text-xs text-gray-700 leading-relaxed">Background description loading...</p>
+                                </div>
+                                <div class="border border-gray-200 p-3 bg-[#fafafa]">
+                                    <span class="block text-[9px] font-mono uppercase tracking-widest text-gray-400 mb-0.5">Lighting Setup</span>
+                                    <p id="bd-lighting" class="text-xs text-gray-700 leading-relaxed">Lighting scheme scanning...</p>
+                                </div>
+                                <div class="border border-gray-200 p-3 bg-[#fafafa]">
+                                    <span class="block text-[9px] font-mono uppercase tracking-widest text-gray-400 mb-0.5">Camera Specs</span>
+                                    <p id="bd-camera" class="text-xs text-gray-700 leading-relaxed">Lens specifications loading...</p>
+                                </div>
+                                <div class="border border-gray-200 p-3 bg-[#fafafa]">
+                                    <span class="block text-[9px] font-mono uppercase tracking-widest text-gray-400 mb-0.5">Medium & Style</span>
+                                    <p id="bd-style" class="text-xs text-gray-700 leading-relaxed">Art medium classification...</p>
+                                </div>
+                                <div class="border border-gray-200 p-3 bg-[#fafafa]">
+                                    <span class="block text-[9px] font-mono uppercase tracking-widest text-gray-400 mb-0.5">Composition Mood</span>
+                                    <p id="bd-mood" class="text-xs text-gray-700 leading-relaxed">Mood attributes loading...</p>
+                                </div>
+                            </div>
+
+                            <!-- Extracted Colors -->
+                            <div>
+                                <span class="block text-[10px] font-mono uppercase tracking-widest text-gray-400 mb-2">Dominant Color Matrix</span>
+                                <div id="bd-color-container" class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                                    <!-- Dynamic color chips loaded here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- VIEW PANEL: NEGATIVE PROMPT TAB -->
+                        <div id="tab-panel-negative" class="flex-grow flex flex-col gap-4 hidden">
+                            <div>
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <span class="text-[10px] font-mono uppercase tracking-widest text-gray-400">Tailored Negative keywords</span>
+                                    <button onclick="copyNegativePrompt()" class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-200 text-xs font-bold transition cursor-pointer">
+                                        Copy Negative
+                                    </button>
+                                </div>
+                                <div id="result-negative-box" class="bg-white border border-gray-200 p-3 font-mono text-xs text-rose-800 leading-relaxed">
+                                    Loading...
+                                </div>
+                            </div>
+                            <div class="bg-rose-50/50 border border-rose-100 p-3 text-rose-950 flex items-start gap-2.5">
+                                <span class="text-xs">⚠️</span>
+                                <p class="text-[11px] text-rose-800/80 leading-relaxed">
+                                    Use these negative parameters in your SDXL negative input box, or in Midjourney using <code class="bg-rose-50 px-1 font-mono">--no [elements]</code> syntax to prevent unwanted distortions, blur, or malformed hands.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- VIEW PANEL: TAGS TAB -->
+                        <div id="tab-panel-tags" class="flex-grow flex flex-col gap-4 hidden">
+                            <span class="block text-[10px] font-mono uppercase tracking-widest text-gray-400">Search Tags & Style Keywords</span>
+                            <div id="result-tags-container" class="flex flex-wrap gap-2">
+                                <!-- Dynamic tags loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- How it works guide section -->
+        <section class="w-full mb-16 bg-white border border-gray-200 p-8 mt-16">
+            <h2 class="text-2xl font-black text-black tracking-tight text-center mb-8">How to Reverse Engineer Image Prompts</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-12 h-12 bg-gray-100 flex items-center justify-center text-black border border-gray-200 font-bold mb-4">1</div>
+                    <h3 class="font-bold text-black mb-1.5">Upload Design</h3>
+                    <p class="text-xs text-gray-500 leading-relaxed">Upload any wireframe, design file, art, or picture mockup. You can also pick a preset for a quick trial.</p>
+                </div>
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-12 h-12 bg-gray-100 flex items-center justify-center text-black border border-gray-200 font-bold mb-4">2</div>
+                    <h3 class="font-bold text-black mb-1.5">Select Model Setting</h3>
+                    <p class="text-xs text-gray-500 leading-relaxed">Choose whether you want prompts crafted for Midjourney parameters, Stable Diffusion XL weights, FLUX, or DALL-E.</p>
+                </div>
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-12 h-12 bg-gray-100 flex items-center justify-center text-black border border-gray-200 font-bold mb-4">3</div>
+                    <h3 class="font-bold text-black mb-1.5">Copy & Run Prompts</h3>
+                    <p class="text-xs text-gray-500 leading-relaxed">Copy the structured formulas, negative tags, and color palettes to create variations instantly.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dynamic Accordion FAQ Section -->
+        <section class="w-full mb-16">
+            <h2 class="text-2xl font-black text-black tracking-tight text-center mb-8">Frequently Asked Questions</h2>
+            <div class="space-y-3 max-w-3xl mx-auto">
+                <details class="group bg-white border border-gray-200 p-5 cursor-pointer">
+                    <summary class="flex justify-between items-center font-bold text-sm text-black select-none">
+                        How does the AI Image to Prompt generator work?
+                        <span class="transition group-open:rotate-180 text-gray-400">▼</span>
+                    </summary>
+                    <p class="mt-3 text-xs text-gray-500 leading-relaxed">
+                        The tool employs advanced Gemini vision capabilities to meticulously analyze the color matrix, medium, geometry, lighting, subject matter, and composition setup of your uploaded image. It then reverse-engineers specific descriptive parameters tailored exactly to standard generator engines.
+                    </p>
+                </details>
+
+                <details class="group bg-white border border-gray-200 p-5 cursor-pointer">
+                    <summary class="flex justify-between items-center font-bold text-sm text-black select-none">
+                        Which AI image generators are supported?
+                        <span class="transition group-open:rotate-180 text-gray-400">▼</span>
+                    </summary>
+                    <p class="mt-3 text-xs text-gray-500 leading-relaxed">
+                        We generate tailored prompt parameters for Midjourney v6 (including aspect ratios, styling raw parameters, chaos levels), Stable Diffusion XL (using keyword tag formats), DALL-E 3 (descriptive natural logic), FLUX.1 (modern instruction-rich layouts), and highly photorealistic specs.
+                    </p>
+                </details>
+
+                <details class="group bg-white border border-gray-200 p-5 cursor-pointer">
+                    <summary class="flex justify-between items-center font-bold text-sm text-black select-none">
+                        Is my uploaded image saved or stored privately?
+                        <span class="transition group-open:rotate-180 text-gray-400">▼</span>
+                    </summary>
+                    <p class="mt-3 text-xs text-gray-500 leading-relaxed">
+                        Yes, your images are parsed in memory and analyzed over secure, encrypted channels. We do not store or use your uploaded imagery for general model training or index them in search archives. Your history of generated text is safely saved in local storage on your device.
+                    </p>
+                </details>
+            </div>
+        </section>
+    </main>
+
+    <!-- Slide-over Drawer for History -->
+    <div id="history-drawer" class="fixed inset-0 z-[1000] overflow-hidden hidden">
+        <div onclick="closeHistoryDrawer()" class="absolute inset-0 bg-gray-400/20 backdrop-blur-sm"></div>
+        <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+            <div class="w-screen max-w-md bg-white shadow-2xl flex flex-col border-l border-gray-200 z-10">
+                <div class="px-4 py-5 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5 text-gray-500 bg-transparent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <h3 class="font-bold text-black text-sm">Previous Calculations</h3>
+                    </div>
+                    <button onclick="closeHistoryDrawer()" class="p-1 text-slate-400 hover:text-gray-600 bg-transparent">
+                        <svg class="w-5 h-5 text-gray-400 bg-transparent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div id="history-list-container" class="flex-grow p-4 overflow-y-auto space-y-3">
+                    <!-- History calculations rendered here -->
+                    <p class="text-xs text-gray-400 text-center py-8">No calculation history found.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Low Credits Warning Popup Modal -->
+    <div id="low-credits-modal" class="fixed inset-0 z-[99999] flex items-center justify-center p-4 hidden">
+        <div onclick="closeLowCreditsModal()" class="absolute inset-0 bg-gray-400/20 backdrop-blur-sm"></div>
+        <div class="relative bg-white border border-gray-200 p-6 max-w-sm w-full text-center z-10 shadow-2xl">
+            <div class="w-12 h-12 bg-transparent text-gray-500 mx-auto flex items-center justify-center mb-3">
+                <svg class="w-6 h-6 text-gray-500 bg-transparent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
+            <h3 class="font-bold text-black mb-1 text-sm">Low Balance Warning</h3>
+            <p class="text-xs text-gray-500 mb-6">You have less than 2 credits left. Please recharge your balance to continue using reverse engineering.</p>
+            <div class="flex gap-2">
+                <a href="/pricing/" class="flex-1 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-bold uppercase tracking-wider text-center border border-gray-300">Buy Credits</a>
+                <button onclick="closeLowCreditsModal()" class="px-4 py-2.5 border border-gray-200 text-xs font-bold text-gray-600 bg-transparent">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Out of Credits Block Modal -->
+    <div id="out-of-credits-modal" class="fixed inset-0 z-[99999] flex items-center justify-center p-4 hidden">
+        <div onclick="closeOutOfCreditsModal()" class="absolute inset-0 bg-gray-400/20 backdrop-blur-sm"></div>
+        <div class="relative bg-white border border-gray-200 p-6 max-w-sm w-full text-center z-10 shadow-2xl">
+            <div class="w-12 h-12 bg-transparent text-gray-500 mx-auto flex items-center justify-center mb-3">
+                <svg class="w-6 h-6 text-gray-500 bg-transparent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+            </div>
+            <h3 class="font-bold text-black mb-1 text-sm">Insufficient Balance</h3>
+            <p class="text-xs text-gray-500 mb-6">Each reverse engineering calculations consumes 2 credits. You do not have enough credits to proceed.</p>
+            <div class="flex gap-2">
+                <a href="/pricing/" class="flex-1 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-bold uppercase tracking-wider text-center border border-gray-300">Upgrade Balance</a>
+                <button onclick="closeOutOfCreditsModal()" class="px-4 py-2.5 border border-gray-200 text-xs font-bold text-gray-600 bg-transparent">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dynamic Toast Notification Container -->
+    <div id="toolimg-toast" class="fixed bottom-6 right-6 z-[999999] transition-all duration-300 transform translate-y-12 opacity-0 hidden">
+        <div class="bg-black text-white px-4 py-2.5 shadow-2xl flex items-center gap-2.5 border border-neutral-800">
+            <span class="text-xs">✨</span>
+            <span id="toast-message-text" class="text-xs font-bold font-mono">Copied successfully</span>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white mt-auto pt-16 pb-8 border-t border-gray-200 w-full">
+        <div class="max-w-[85vw] mx-auto px-4 sm:px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+                <div class="md:col-span-1">
+                    <a href="/" class="flex items-center gap-2 mb-4">
+                        <img src="https://timetablecreator.online/blog/wp-content/uploads/2026/08/logo.png" alt="ToolIMG Logo" class="h-8 w-auto">
+                        <span class="font-bold text-xl tracking-tight text-black">Tool<span class="text-black">IMG</span></span>
+                    </a>
+                    <p class="text-gray-500 text-[13px] leading-relaxed mb-4">
+                        Free AI Image to Prompt Generator reverse-engineers Midjourney, Stable Diffusion, DALL-E, and FLUX prompts.
+                    </p>
+                    <a href="mailto:support@toolimg.online" class="text-black font-semibold hover:underline text-[13px]">support@toolimg.online</a>
+                </div>
+                <div>
+                    <h4 class="font-bold text-black mb-4 text-xs uppercase tracking-wider">Products</h4>
+                    <ul class="space-y-3 text-[13px]">
+                        <li><a href="/tools/image-to-code/" class="text-gray-600 hover:text-black transition">Image to Code AI</a></li>
+                        <li><a href="/tools/handwriting-to-text/" class="text-gray-600 hover:text-black transition">English Handwriting OCR</a></li>
+                        <li><a href="/tools/hindi-handwriting-to-text/" class="text-gray-600 hover:text-black transition">Hindi Handwriting OCR</a></li>
+                        <li><a href="/tools/" class="text-gray-600 hover:text-black transition">All Tools</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-black mb-4 text-xs uppercase tracking-wider">Company</h4>
+                    <ul class="space-y-3 text-[13px]">
+                        <li><a href="https://toolimg.online/about.html" class="text-gray-600 hover:text-black transition">About Us</a></li>
+                        <li><a href="https://toolimg.online/contact.html" class="text-gray-600 hover:text-black transition">Contact Us</a></li>
+                        <li><a href="/pricing/" class="text-gray-600 hover:text-black transition">Pricing</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-black mb-4 text-xs uppercase tracking-wider">Legal</h4>
+                    <ul class="space-y-3 text-[13px]">
+                        <li><a href="/privacy-policy.html" class="text-gray-600 hover:text-black transition">Privacy Policy</a></li>
+                        <li><a href="https://toolimg.online/terms.html" class="text-gray-600 hover:text-black transition">Terms of Service</a></li>
+                        <li><a href="/refund-policy.html" class="text-gray-600 hover:text-black transition">Refund Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="pt-8 flex flex-col md:flex-row justify-between items-center gap-4 border-t border-gray-100">
+                <p class="text-[12px] text-gray-400">© 2026 ToolIMG. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- Firebase Scripts -->
+    <script type="module">
+        import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithPopup, signInWithRedirect, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { initializeFirestore, getFirestore, doc, onSnapshot, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            "apiKey": "AIzaSyCFyGzp7viV1tq25DAMnpKKSJpPngtVa14",
+            "authDomain": "gen-lang-client-0844549707.firebaseapp.com",
+            "projectId": "gen-lang-client-0844549707",
+            "firestoreDatabaseId": "ai-studio-toolimg-a40860b9-3db9-4eab-a65f-f070e159a9b3",
+            "storageBucket": "gen-lang-client-0844549707.firebasestorage.app",
+            "messagingSenderId": "845800015860",
+            "appId": "1:845800015860:web:a6229be704605991785ba1"
+        };
+
+        let app, auth, db;
+        try {
+            app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+            auth = getAuth(app);
+            const dbId = 'ai-studio-toolimg-a40860b9-3db9-4eab-a65f-f070e159a9b3';
+            try {
+                db = initializeFirestore(app, { experimentalAutoDetectLongPolling: true }, dbId);
+            } catch (fErr) {
+                db = getFirestore(app, dbId);
+            }
+            window.auth = auth;
+            window.db = db;
+        } catch (e) {
+            console.error('Firebase initialization failed:', e);
+        }
+
+        const provider = new GoogleAuthProvider();
+
+        // Guest Credit State Setup
+        if (!localStorage.getItem('guest_id')) {
+            localStorage.setItem('guest_id', 'guest_' + Math.random().toString(36).substring(2, 15));
+        }
+        if (localStorage.getItem('guest_credits') === null) {
+            localStorage.setItem('guest_credits', '5');
+        }
+
+        window.userCreditBalance = null;
+        window.isLoggedIn = false;
+
+        window.getCurrentCredits = function() {
+            if (window.userCreditBalance !== null && !isNaN(window.userCreditBalance)) {
+                return Math.max(0, parseInt(window.userCreditBalance, 10));
+            }
+            return Math.max(0, parseInt(localStorage.getItem('guest_credits') || '5', 10));
+        };
+
+        window.consumeUserCredit = async function() {
+            if (auth && auth.currentUser) {
+                const current = window.getCurrentCredits();
+                if (current <= 0) return;
+                const userDocRef = doc(db, 'users', auth.currentUser.uid);
+                try {
+                    await updateDoc(userDocRef, {
+                        credits: increment(-2),
+                        creditsUsed_imageToPrompt: increment(2)
+                    });
+                } catch(e) {
+                    console.error("Failed to consume credit in Firestore:", e);
+                }
+            } else {
+                let current = parseInt(localStorage.getItem('guest_credits') || '5', 10);
+                current = Math.max(0, current - 2);
+                localStorage.setItem('guest_credits', current.toString());
+                updateCreditsUI(current);
+            }
+        };
+
+        function updateCreditsUI(credits) {
+            const display = document.getElementById('credits-count');
+            if (display) display.textContent = credits;
+        }
+
+        window.handleLogin = async function() {
+            if (!auth) {
+                alert("Auth is not configured yet.");
+                return;
+            }
+            try {
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                try {
+                    await signInWithRedirect(auth, provider);
+                } catch (rErr) {
+                    alert("Login process failed: " + rErr.message);
+                }
+            }
+        };
+
+        window.handleLogout = async function() {
+            if (auth) {
+                try {
+                    await signOut(auth);
+                    window.location.reload();
+                } catch (e) {
+                    console.error("Signout failed:", e);
+                }
+            }
+        };
+
+        // Firebase Auth listener
+        let unsubCredits = null;
+        if (auth) {
+            onAuthStateChanged(auth, (user) => {
+                window.isLoggedIn = !!user;
+                const guestBlock = document.getElementById('header-auth-guest');
+                const userMenuBlock = document.getElementById('user-menu');
+                const mobileGuestBlock = document.getElementById('mobile-auth-guest');
+                const mobileUserBlock = document.getElementById('mobile-auth-user');
+                const userNameDisplay = document.getElementById('user-name');
+                const userAvatarImg = document.getElementById('user-avatar');
+                const userFallbackIcon = document.getElementById('user-fallback');
+
+                if (unsubCredits) {
+                    unsubCredits();
+                    unsubCredits = null;
+                }
+
+                if (user) {
+                    if (guestBlock) guestBlock.classList.add('hidden');
+                    if (userMenuBlock) userMenuBlock.classList.remove('hidden');
+                    if (mobileGuestBlock) mobileGuestBlock.classList.add('hidden');
+                    if (mobileUserBlock) mobileUserBlock.classList.remove('hidden');
+
+                    if (userNameDisplay) userNameDisplay.textContent = user.displayName || user.email.split('@')[0];
+                    if (userAvatarImg && user.photoURL) {
+                        userAvatarImg.src = user.photoURL;
+                        userAvatarImg.classList.remove('hidden');
+                        if (userFallbackIcon) userFallbackIcon.classList.add('hidden');
+                    }
+
+                    // Firestore sync
+                    const userRef = doc(db, 'users', user.uid);
+                    unsubCredits = onSnapshot(userRef, (snapshot) => {
+                        if (snapshot.exists()) {
+                            const data = snapshot.data();
+                            window.userCreditBalance = data.credits || 0;
+                            updateCreditsUI(data.credits || 0);
+                        } else {
+                            // First time login profile save
+                            setDoc(userRef, {
+                                email: user.email,
+                                displayName: user.displayName || "",
+                                credits: 5,
+                                createdAt: new Date()
+                            }).then(() => {
+                                window.userCreditBalance = 5;
+                                updateCreditsUI(5);
+                            });
+                        }
+                    });
+                } else {
+                    if (guestBlock) guestBlock.classList.remove('hidden');
+                    if (userMenuBlock) userMenuBlock.classList.add('hidden');
+                    if (mobileGuestBlock) mobileGuestBlock.classList.remove('hidden');
+                    if (mobileUserBlock) mobileUserBlock.classList.add('hidden');
+                    
+                    const guestCredits = parseInt(localStorage.getItem('guest_credits') || '5', 10);
+                    updateCreditsUI(guestCredits);
+                }
+            });
+        }
+    </script>
+
+
+    <!-- Core Page Interactive Functions -->
+    <script>
+        // Data structure matching the React side
+        const SAMPLE_PRESETS_DATA = [
+            {
+                name: 'Cyberpunk City',
+                tag: 'Sci-Fi / 3D',
+                url: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600&auto=format&fit=crop&q=80',
+                title: 'Futuristic Cyberpunk Metropolis',
+                previewPrompt: 'Futuristic cyberpunk metropolis at night with glowing neon kanji billboards, flying vehicles, wet asphalt reflecting violet and cyan light, cinematic wide angle 24mm --v 6.0 --ar 16:9 --stylize 250',
+            },
+            {
+                name: 'Studio Portrait',
+                tag: 'Photography',
+                url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80',
+                title: 'High-Fashion Studio Portrait',
+                previewPrompt: 'Editorial fashion portrait of a young woman with soft natural makeup, dramatic chiaroscuro studio lighting, 85mm f/1.4 lens, shallow depth of field, 8k uhd, masterpiece',
+            },
+            {
+                name: 'Ghibli Fantasy',
+                tag: 'Anime / Art',
+                url: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&auto=format&fit=crop&q=80',
+                title: 'Whimsical Fantasy Mountain Village',
+                previewPrompt: 'Studio Ghibli aesthetic anime landscape of a lush hillside village with windmill, fluffy cumulus clouds, vibrant watercolor textures, golden hour sunlight, makoto shinkai style',
+            },
+            {
+                name: 'Isometric Room',
+                tag: '3D Render',
+                url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80',
+                title: 'Isometric Cozy Developer Workspace',
+                previewPrompt: '3D isometric miniature cozy developer room with dual monitors, mechanical keyboard, indoor plants, warm ambient lamp light, Octane Render, Unreal Engine 5, ray tracing, cute stylized 3D',
+            }
+        ];
+
+        let stateSelectedImage = null; // base64 representation of selected file
+        let stateSelectedFileName = "";
+        let stateSelectedFileSize = "";
+        let stateTargetModel = 'midjourney';
+        let stateDetailLevel = 'balanced';
+        let stateActiveOutputTab = 'prompts';
+        let stateActivePromptSubTab = 'midjourney';
+        let stateActiveOutputData = null; // Generated prompt JSON structure
+
+        // Popover toggle handlers
+        function toggleLangMenu(event) {
+            event.stopPropagation();
+            const popover = document.getElementById('lang-popover');
+            popover.classList.toggle('hidden');
+        }
+
+        function toggleUserDropdown(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('user-dropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+        document.addEventListener('click', () => {
+            const popover = document.getElementById('lang-popover');
+            const dropdown = document.getElementById('user-dropdown');
+            if (popover) popover.classList.add('hidden');
+            if (dropdown) dropdown.classList.add('hidden');
+        });
+
+        // Translate helper
+        function switchLang(lang) {
+            showToast("Language changed: " + lang.toUpperCase());
+        }
+
+        // Drop zone drag and drop events
+        const dropZone = document.getElementById('drop-zone');
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-black', 'bg-gray-50');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('border-black', 'bg-gray-50');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-black', 'bg-gray-50');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                processUploadedFile(file);
+            }
+        });
+
+        dropZone.addEventListener('click', (e) => {
+            if (e.target.closest('button')) return; // Avoid clearing action trigger twice
+            document.getElementById('image-file-input').click();
+        });
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                processUploadedFile(file);
+            }
+        }
+
+        function processUploadedFile(file) {
+            stateSelectedFileName = file.name;
+            stateSelectedFileSize = (file.size / 1024).toFixed(1) + " KB";
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                stateSelectedImage = e.target.result;
+                updatePreviewUI();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function updatePreviewUI() {
+            const promptCont = document.getElementById('upload-prompt-container');
+            const previewCont = document.getElementById('upload-preview-container');
+            const previewImg = document.getElementById('upload-preview-img');
+            const fileNameSpan = document.getElementById('preview-file-name');
+            const fileSizeSpan = document.getElementById('preview-file-size');
+            const clearBtn = document.getElementById('clear-upload-btn');
+
+            if (stateSelectedImage) {
+                promptCont.classList.add('hidden');
+                previewCont.classList.remove('hidden');
+                previewImg.src = stateSelectedImage;
+                fileNameSpan.textContent = stateSelectedFileName;
+                fileSizeSpan.textContent = stateSelectedFileSize;
+                clearBtn.classList.remove('hidden');
+            } else {
+                promptCont.classList.remove('hidden');
+                previewCont.classList.add('hidden');
+                previewImg.src = "";
+                clearBtn.classList.add('hidden');
+            }
+        }
+
+        function clearSelectedImage(event) {
+            if (event) event.stopPropagation();
+            stateSelectedImage = null;
+            stateSelectedFileName = "";
+            stateSelectedFileSize = "";
+            document.getElementById('image-file-input').value = "";
+            updatePreviewUI();
+        }
+
+        // Presets loading
+        function loadPreset(idx) {
+            const preset = SAMPLE_PRESETS_DATA[idx];
+            stateSelectedFileName = preset.name + ".png";
+            stateSelectedFileSize = "Preset Asset";
+            
+            // Re-route Unsplash asset URL locally as base64 conversion trigger
+            setIsLoadingUI(true, "Fetching preset image...");
+            
+            fetch(preset.url)
+                .then(res => res.blob())
+                .then(blob => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        stateSelectedImage = e.target.result;
+                        updatePreviewUI();
+                        setIsLoadingUI(false);
+                        showToast(`Loaded preset: ${preset.name}`);
+                    };
+                    reader.readAsDataURL(blob);
+                })
+                .catch(() => {
+                    // Fallback to absolute URL directly in preview if CORS issue
+                    stateSelectedImage = preset.url;
+                    updatePreviewUI();
+                    setIsLoadingUI(false);
+                    showToast(`Loaded preset preview: ${preset.name}`);
+                });
+        }
+
+        // Slider modifiers
+        function setDetailLevel(level) {
+            stateDetailLevel = level;
+            ['concise', 'balanced', 'exhaustive'].forEach(item => {
+                const btn = document.getElementById(`dl-btn-${item}`);
+                if (item === level) {
+                    btn.className = "py-1.5 text-xs font-bold bg-white text-black shadow-sm border border-gray-200 transition cursor-pointer";
+                } else {
+                    btn.className = "py-1.5 text-xs font-bold bg-transparent text-gray-500 transition cursor-pointer";
+                }
+            });
+        }
+
+        function updateTargetModel(model) {
+            stateTargetModel = model;
+            stateActivePromptSubTab = model === 'anime' || model === '3d-render' ? 'midjourney' : model;
+            updateSubTabHighlights();
+        }
+
+        function setIsLoadingUI(loading, customMsg) {
+            const emptyState = document.getElementById('out-state-empty');
+            const loadingState = document.getElementById('out-state-loading');
+            const successState = document.getElementById('out-state-success');
+            const stepTag = document.getElementById('loading-step-tag');
+            const progressBar = document.getElementById('loading-progress-bar');
+            
+            const btnSpin = document.getElementById('btn-spin-svg');
+            const btnRocket = document.getElementById('btn-rocket-svg');
+            const btnText = document.getElementById('generate-btn-text');
+
+            if (loading) {
+                emptyState.classList.add('hidden');
+                successState.classList.add('hidden');
+                loadingState.classList.remove('hidden');
+                if (customMsg) stepTag.textContent = customMsg;
+                progressBar.style.width = "10%";
+
+                btnSpin.classList.remove('hidden');
+                btnRocket.classList.add('hidden');
+                btnText.textContent = "Processing...";
+            } else {
+                loadingState.classList.add('hidden');
+                btnSpin.classList.add('hidden');
+                btnRocket.classList.remove('hidden');
+                btnText.textContent = "Generate Prompts";
+            }
+        }
+
+        // Trigger prompt reverse-engineering call to server API
+        async function triggerPromptGeneration() {
+            if (!stateSelectedImage) {
+                showToast("Please upload an image first.");
+                return;
+            }
+
+            // Check credits
+            const balance = window.getCurrentCredits();
+            if (balance < 2) {
+                showOutOfCreditsModal();
+                return;
+            }
+
+            setIsLoadingUI(true, "Reading image dimensions...");
+            
+            // Mock realistic processing sequences
+            const progressSteps = [
+                { width: 25, text: "Detecting primary subject patterns..." },
+                { width: 45, text: "Scanning light angles & atmosphere..." },
+                { width: 65, text: "Parsing art medium classification..." },
+                { width: 85, text: "Revising prompt structural parameters..." },
+                { width: 95, text: "Assembling final model codeblocks..." }
+            ];
+
+            let stepIdx = 0;
+            const progressTimer = setInterval(() => {
+                if (stepIdx < progressSteps.length) {
+                    const step = progressSteps[stepIdx];
+                    document.getElementById('loading-step-tag').textContent = step.text;
+                    document.getElementById('loading-progress-bar').style.width = step.width + "%";
+                    stepIdx++;
+                }
+            }, 600);
+
+            try {
+                const response = await fetch('/api/image-to-prompt', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        imageBase64: stateSelectedImage,
+                        mimeType: 'image/jpeg',
+                        targetModel: stateTargetModel,
+                        detailLevel: stateDetailLevel,
+                        customInstructions: document.getElementById('custom-instructions-area').value,
+                        options: {
+                            includeCamera: document.getElementById('opt-camera').checked,
+                            includeLighting: document.getElementById('opt-lighting').checked,
+                            includeNegative: document.getElementById('opt-negative').checked,
+                            includeColors: document.getElementById('opt-colors').checked,
+                            includeQuality: document.getElementById('opt-quality').checked
+                        }
+                    })
+                });
+
+                clearInterval(progressTimer);
+                
+                const responseJson = await response.json();
+                if (responseJson && responseJson.success && responseJson.data) {
+                    stateActiveOutputData = responseJson.data;
+                    
+                    // Consume credits
+                    if (window.consumeUserCredit) {
+                        await window.consumeUserCredit();
+                    }
+
+                    // Save to history
+                    saveCalculationToHistory(stateActiveOutputData, stateSelectedImage);
+
+                    // Show success
+                    renderPromptResults();
+                    showToast("Prompts reverse engineered!");
+                    if (window.getCurrentCredits() < 2) {
+                        showLowCreditsModal();
+                    }
+                } else {
+                    alert("Analysis error: " + (responseJson.error || "Failed to analyze image content."));
+                    setIsLoadingUI(false);
+                }
+            } catch (err) {
+                clearInterval(progressTimer);
+                console.error("Server execution crashed:", err);
+                alert("Calculation process crashed. Please check connection.");
+                setIsLoadingUI(false);
+            }
+        }
+
+        function renderPromptResults() {
+            setIsLoadingUI(false);
+            
+            document.getElementById('out-state-empty').classList.add('hidden');
+            document.getElementById('out-state-loading').classList.add('hidden');
+            document.getElementById('out-state-success').classList.remove('hidden');
+
+            const data = stateActiveOutputData;
+
+            // Render text components
+            document.getElementById('result-scene-title').textContent = data.title || "Calculated Scene";
+            
+            // Render breakdowns
+            document.getElementById('bd-subject').textContent = data.breakdown.subject;
+            document.getElementById('bd-background').textContent = data.breakdown.background;
+            document.getElementById('bd-lighting').textContent = data.breakdown.lighting;
+            document.getElementById('bd-camera').textContent = data.breakdown.camera;
+            document.getElementById('bd-style').textContent = data.breakdown.style;
+            document.getElementById('bd-mood').textContent = data.breakdown.mood;
+
+            // Colors container
+            const colorsContainer = document.getElementById('bd-color-container');
+            colorsContainer.innerHTML = "";
+            if (data.breakdown.colors && data.breakdown.colors.length > 0) {
+                data.breakdown.colors.forEach(col => {
+                    const chip = document.createElement('div');
+                    chip.className = "flex items-center gap-1.5 border border-gray-200 p-1.5 bg-white cursor-pointer hover:border-black transition";
+                    chip.onclick = () => {
+                        navigator.clipboard.writeText(col.hex);
+                        showToast(`Copied Hex: ${col.hex}`);
+                    };
+                    chip.innerHTML = `
+                        <div class="w-4 h-4 rounded-none border border-gray-200" style="background-color: ${col.hex}"></div>
+                        <div class="min-w-0">
+                            <span class="block text-[10px] font-black leading-none truncate">${col.name}</span>
+                            <span class="block text-[8px] font-mono text-gray-400 leading-none">${col.hex}</span>
+                        </div>
+                    `;
+                    colorsContainer.appendChild(chip);
+                });
+            }
+
+            // Negative Prompt
+            document.getElementById('result-negative-box').textContent = data.negativePrompt || "None suggested";
+
+            // Tags
+            const tagsCont = document.getElementById('result-tags-container');
+            tagsCont.innerHTML = "";
+            if (data.tags && data.tags.length > 0) {
+                data.tags.forEach(tag => {
+                    const badge = document.createElement('span');
+                    badge.className = "px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-mono text-xs font-semibold border border-gray-200 cursor-pointer transition";
+                    badge.textContent = tag;
+                    badge.onclick = () => {
+                        navigator.clipboard.writeText(tag);
+                        showToast(`Copied: ${tag}`);
+                    };
+                    tagsCont.appendChild(badge);
+                });
+            }
+
+            // Update current prompt box
+            updatePromptCodebox();
+        }
+
+        function updatePromptCodebox() {
+            const data = stateActiveOutputData;
+            if (!data) return;
+
+            let promptText = "";
+            switch (stateActivePromptSubTab) {
+                case 'midjourney': promptText = data.midjourney; break;
+                case 'stableDiffusion': promptText = data.stableDiffusion; break;
+                case 'dalle3': promptText = data.dalle3; break;
+                case 'flux': promptText = data.flux; break;
+                case 'photorealistic': promptText = data.photorealistic; break;
+                default: promptText = data.midjourney;
+            }
+
+            document.getElementById('result-prompt-codebox').textContent = promptText;
+        }
+
+        // Set main tabs (Prompts, Breakdown, Negative, Tags)
+        function setActiveOutputTab(tab) {
+            stateActiveOutputTab = tab;
+            
+            // Set button classes
+            ['prompts', 'breakdown', 'negative', 'tags'].forEach(item => {
+                const btn = document.getElementById(`out-tab-${item}`);
+                if (item === tab) {
+                    btn.className = "flex-1 min-w-[100px] text-center py-4 px-3 text-xs font-black tracking-wider uppercase border-b-2 border-black bg-white text-black transition cursor-pointer";
+                } else {
+                    btn.className = "flex-1 min-w-[100px] text-center py-4 px-3 text-xs font-black tracking-wider uppercase border-b-2 border-transparent text-gray-500 hover:text-black transition cursor-pointer";
+                }
+            });
+
+            // Set content visibility
+            ['prompts', 'breakdown', 'negative', 'tags'].forEach(item => {
+                const pane = document.getElementById(`tab-panel-${item}`);
+                if (pane) {
+                    if (item === tab) {
+                        pane.classList.remove('hidden');
+                    } else {
+                        pane.classList.add('hidden');
+                    }
+                }
+            });
+        }
+
+        // Set prompts sub-tabs
+        function setActivePromptSubTab(subTab) {
+            stateActivePromptSubTab = subTab;
+            updateSubTabHighlights();
+            updatePromptCodebox();
+        }
+
+        function updateSubTabHighlights() {
+            ['midjourney', 'stableDiffusion', 'dalle3', 'flux', 'photorealistic'].forEach(item => {
+                const btn = document.getElementById(`pst-${item}`);
+                if (item === stateActivePromptSubTab) {
+                    btn.className = "flex-1 py-1 px-2.5 text-[11px] font-bold transition rounded-none bg-white text-black shadow-sm border border-gray-200 cursor-pointer";
+                } else {
+                    btn.className = "flex-1 py-1 px-2.5 text-[11px] font-bold transition rounded-none bg-transparent text-gray-500 hover:text-black cursor-pointer";
+                }
+            });
+        }
+
+        // Toast Notification System
+        function showToast(msg) {
+            const toast = document.getElementById('toolimg-toast');
+            const toastText = document.getElementById('toast-message-text');
+            toastText.textContent = msg;
+            
+            toast.classList.remove('hidden');
+            void toast.offsetWidth; // Force layout recalculation
+            toast.classList.remove('translate-y-12', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-12', 'opacity-0');
+                setTimeout(() => toast.classList.add('hidden'), 300);
+            }, 3000);
+        }
+
+        // Copy prompts actions
+        function copyActivePrompt() {
+            const promptBox = document.getElementById('result-prompt-codebox');
+            navigator.clipboard.writeText(promptBox.textContent);
+            showToast("Copied prompt!");
+        }
+
+        function copyNegativePrompt() {
+            const negBox = document.getElementById('result-negative-box');
+            navigator.clipboard.writeText(negBox.textContent);
+            showToast("Copied negative tags!");
+        }
+
+        // Credits Popups
+        function showLowCreditsModal() {
+            document.getElementById('low-credits-modal').classList.remove('hidden');
+        }
+        function closeLowCreditsModal() {
+            document.getElementById('low-credits-modal').classList.add('hidden');
+        }
+        function showOutOfCreditsModal() {
+            document.getElementById('out-of-credits-modal').classList.remove('hidden');
+        }
+        function closeOutOfCreditsModal() {
+            document.getElementById('out-of-credits-modal').classList.add('hidden');
+        }
+
+        // Mobile drawer handlers
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileClose = document.getElementById('mobile-menu-close');
+        const mobileModal = document.getElementById('mobile-menu-modal');
+        const mobileBackdrop = document.getElementById('mobile-menu-backdrop');
+
+        function toggleMobileMenu() {
+            mobileModal.classList.toggle('hidden');
+            mobileModal.classList.toggle('flex');
+        }
+
+        if (mobileBtn) mobileBtn.addEventListener('click', toggleMobileMenu);
+        if (mobileClose) mobileClose.addEventListener('click', toggleMobileMenu);
+        if (mobileBackdrop) mobileBackdrop.addEventListener('click', toggleMobileMenu);
+
+        // History sliders
+        function openHistoryDrawer() {
+            document.getElementById('history-drawer').classList.remove('hidden');
+            renderHistoryCalculations();
+        }
+        function closeHistoryDrawer() {
+            document.getElementById('history-drawer').classList.add('hidden');
+        }
+
+        // Save history elements to local storage for guests, or users as backup
+        function saveCalculationToHistory(promptData, thumbnailBase64) {
+            const calculations = JSON.parse(localStorage.getItem('toolimg_prompt_calculations') || '[]');
+            
+            // Limit thumbnail size slightly in localStorage to stay inside quotas
+            let safeThumbnail = thumbnailBase64;
+            if (thumbnailBase64 && thumbnailBase64.length > 200000) {
+                safeThumbnail = thumbnailBase64.substring(0, 100000) + "..."; // Simple truncate fallback
+            }
+
+            const historyItem = {
+                id: Date.now(),
+                timestamp: new Date().toLocaleDateString(),
+                title: promptData.title || "Calculated Prompt scene",
+                promptData: promptData,
+                thumbnail: safeThumbnail
+            };
+
+            // Store maximum 12 historical calculations
+            calculations.unshift(historyItem);
+            if (calculations.length > 12) {
+                calculations.pop();
+            }
+            localStorage.setItem('toolimg_prompt_calculations', JSON.stringify(calculations));
+        }
+
+        function renderHistoryCalculations() {
+            const container = document.getElementById('history-list-container');
+            const calculations = JSON.parse(localStorage.getItem('toolimg_prompt_calculations') || '[]');
+
+            if (calculations.length === 0) {
+                container.innerHTML = '<p class="text-xs text-gray-400 text-center py-8">No calculation history found.</p>';
+                return;
+            }
+
+            container.innerHTML = "";
+            calculations.forEach(calc => {
+                const card = document.createElement('div');
+                card.className = "flex items-center gap-3 p-2.5 border border-gray-200 bg-white hover:border-black transition group cursor-pointer";
+                card.onclick = () => {
+                    stateActiveOutputData = calc.promptData;
+                    stateSelectedImage = calc.thumbnail;
+                    stateSelectedFileName = calc.title + ".png";
+                    stateSelectedFileSize = "History Log";
+                    
+                    updatePreviewUI();
+                    renderPromptResults();
+                    closeHistoryDrawer();
+                    showToast(`Restored: ${calc.title}`);
+                };
+
+                const imgHtml = calc.thumbnail && !calc.thumbnail.endsWith("...") 
+                    ? `<img src="${calc.thumbnail}" alt="Thumbnail" class="w-10 h-10 object-cover border border-gray-200 rounded-none shrink-0" />`
+                    : `<div class="w-10 h-10 bg-gray-100 flex items-center justify-center border border-gray-200 shrink-0 text-gray-400">🖼️</div>`;
+
+                card.innerHTML = `
+                    ${imgHtml}
+                    <div class="min-w-0 flex-grow">
+                        <h4 class="text-xs font-bold text-black truncate group-hover:underline leading-tight">${calc.title}</h4>
+                        <span class="text-[9px] font-mono text-gray-400 block">${calc.timestamp}</span>
+                    </div>
+                    <svg class="w-4 h-4 text-gray-400 group-hover:text-black shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                `;
+                container.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>
