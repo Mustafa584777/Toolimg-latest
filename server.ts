@@ -704,6 +704,23 @@ Return a JSON response with the following structured format:
 });
 
 
+// Explicitly serve ads.txt
+app.get('/ads.txt', (req, res) => {
+  const pDist = path.join(__dirname, 'dist', 'ads.txt');
+  const pPublic = path.join(__dirname, 'public', 'ads.txt');
+  const pRoot = path.join(__dirname, 'ads.txt');
+  
+  if (fs.existsSync(pDist)) {
+    res.type('text/plain').sendFile(pDist);
+  } else if (fs.existsSync(pPublic)) {
+    res.type('text/plain').sendFile(pPublic);
+  } else if (fs.existsSync(pRoot)) {
+    res.type('text/plain').sendFile(pRoot);
+  } else {
+    res.type('text/plain').send('google.com, pub-6096089814528631, DIRECT, f08c47fec0942fa0\n');
+  }
+});
+
 // Serve frontend in dev / prod
 
 // Rewrite language prefixes for static assets
