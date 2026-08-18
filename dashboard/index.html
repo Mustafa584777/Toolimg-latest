@@ -4045,54 +4045,7 @@
                     </div>
                 </div>
 
-                <!-- Saved Conversion History Dashboard Card -->
-                <div class="bg-white dark:bg-black dark: rounded-none p-6 md:p-8 shadow-sm">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                        <div>
-                            <h2 class="text-2xl font-bold text-black dark:text-gray-100 flex items-center gap-2.5">
-                                <svg class="w-6 h-6 text-black dark:text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                Saved Conversion History
-                            </h2>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Access and manage all your past AI conversions</p>
-                        </div>
-                        
-                        <div class="flex items-center gap-2">
-                            <button onclick="clearHistoryWithConfirm()" class="px-3 py-1.5 text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-none transition">
-                                Clear History
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Filter Tabs -->
-                    <div class="flex flex-wrap gap-2 pb-4 mb-4 dark: text-xs">
-                        <button onclick="window.filterDashHistory('all')" id="dash-hist-all" class="px-3.5 py-1.5 rounded-none font-bold bg-black text-white shadow-sm transition">All Tools</button>
-                        <button onclick="window.filterDashHistory('image-to-code')" id="dash-hist-img" class="px-3.5 py-1.5 rounded-none font-bold bg-gray-100 dark:bg-black text-gray-600 dark:text-gray-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition">Image to Code</button>
-                        <button onclick="window.filterDashHistory('handwriting-to-text')" id="dash-hist-ocr" class="px-3.5 py-1.5 rounded-none font-bold bg-gray-100 dark:bg-black text-gray-600 dark:text-gray-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition">Handwriting OCR</button>
-                        <button onclick="window.filterDashHistory('hindi-handwriting-to-text')" id="dash-hist-hindi" class="px-3.5 py-1.5 rounded-none font-bold bg-gray-100 dark:bg-black text-gray-600 dark:text-gray-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition">Hindi OCR</button>
-                        <button onclick="window.filterDashHistory('html-to-image')" id="dash-hist-html" class="px-3.5 py-1.5 rounded-none font-bold bg-gray-100 dark:bg-black text-gray-600 dark:text-gray-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition">HTML to Image</button>
-                    </div>
-
-                    <!-- Guest Session Sync Card in Dashboard -->
-                    <div id="dash-guest-history-banner" class="hidden mb-6 p-5 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-none shadow-sm">
-                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                            <div>
-                                <h3 class="text-sm font-extrabold font-mono uppercase tracking-[0.16em] text-[11px] font-semibold text-black">Guest History Mode</h3>
-                                <p class="text-xs text-black mt-1">Log in to sync your guest conversions permanently to your account across all browsers!</p>
-                            </div>
-                            <button onclick="handleLogin()" class="px-4 py-2 bg-white text-black hover:bg-gray-100 text-xs font-bold rounded-none transition shadow-sm shrink-0 flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.761H12.545z"/></svg>
-                                <span>Sign In to Sync History</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- History Items Grid / List -->
-                    <div id="dash-history-list" class="space-y-3 min-h-[120px]">
-                        <!-- Dynamic History items loaded here -->
-                    </div>
-                </div>          </div>
+          </div>
             </div>
 
             <!-- Right 1 Column: Account & Quick Actions -->

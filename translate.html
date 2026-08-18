@@ -1,0 +1,161 @@
+<!-- 
+====================================================================================================
+                        ToolIMG - UNIVERSAL GOOGLE TRANSLATE COMPONENT (translate.html)
+====================================================================================================
+-->
+
+<!-- Hreflang Meta Tags for SEO -->
+<link rel="alternate" hreflang="en" href="https://toolimg.online/" />
+<link rel="alternate" hreflang="es" href="https://toolimg.online/es/" />
+<link rel="alternate" hreflang="fr" href="https://toolimg.online/fr/" />
+<link rel="alternate" hreflang="de" href="https://toolimg.online/de/" />
+<link rel="alternate" hreflang="ru" href="https://toolimg.online/ru/" />
+<link rel="alternate" hreflang="ar" href="https://toolimg.online/ar/" />
+<link rel="alternate" hreflang="x-default" href="https://toolimg.online/" />
+
+<!-- Google Translate Hidden Container -->
+<div id="google_translate_element" style="display: none !important;"></div>
+
+<!-- Translation Widget Styles to prevent Google Translate banner push & layout shift -->
+<style>
+    .goog-te-banner-frame { display: none !important; }
+    body { top: 0px !important; }
+    .skiptranslate { display: none !important; }
+    #goog-gt-tt { display: none !important; visibility: hidden !important; }
+    .goog-tooltip { display: none !important; }
+    .goog-tooltip:hover { display: none !important; }
+    .goog-text-highlight { background-color: transparent !important; border: none !important; box-shadow: none !important; }
+</style>
+
+<!-- Translation Component HTML & Logic -->
+<div class="relative inline-block text-left">
+    <button id="lang-menu-btn" type="button" onclick="toggleLangMenu(event)" class="p-2 hover:bg-[#fafafa] dark:hover:bg-black rounded-none border border-gray-100 dark:border-neutral-900 transition flex items-center justify-center cursor-pointer" aria-label="Select Language">
+        <svg class="w-5 h-5 text-black dark:text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="width: 20px; height: 20px;">
+            <path d="M5 8l6 6"></path>
+            <path d="M4 14l6-6 2-3"></path>
+            <path d="M2 5h12"></path>
+            <path d="M7 2h1"></path>
+            <path d="M22 22l-5-10-5 10"></path>
+            <path d="M14 18h6"></path>
+        </svg>
+    </button>
+    
+    <!-- Language Dropdown Popover Menu -->
+    <div id="lang-popover" class="hidden absolute right-0 mt-2 w-44 bg-white dark:bg-black rounded-none shadow-xl flex-col z-[99999] overflow-hidden border border-gray-200 dark:border-neutral-800 py-1">
+        <div class="py-1">
+            <button type="button" onclick="switchLang('en')" class="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-[#fafafa] dark:hover:bg-neutral-900 transition flex items-center justify-between">
+                <span>English</span>
+                <span class="text-xs font-mono text-gray-400">EN</span>
+            </button>
+            <button type="button" onclick="switchLang('es')" class="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-[#fafafa] dark:hover:bg-neutral-900 transition flex items-center justify-between">
+                <span>Español</span>
+                <span class="text-xs font-mono text-gray-400">ES</span>
+            </button>
+            <button type="button" onclick="switchLang('fr')" class="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-[#fafafa] dark:hover:bg-neutral-900 transition flex items-center justify-between">
+                <span>Français</span>
+                <span class="text-xs font-mono text-gray-400">FR</span>
+            </button>
+            <button type="button" onclick="switchLang('de')" class="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-[#fafafa] dark:hover:bg-neutral-900 transition flex items-center justify-between">
+                <span>Deutsch</span>
+                <span class="text-xs font-mono text-gray-400">DE</span>
+            </button>
+            <button type="button" onclick="switchLang('ru')" class="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-[#fafafa] dark:hover:bg-neutral-900 transition flex items-center justify-between">
+                <span>Русский</span>
+                <span class="text-xs font-mono text-gray-400">RU</span>
+            </button>
+            <button type="button" onclick="switchLang('ar')" class="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-[#fafafa] dark:hover:bg-neutral-900 transition flex items-center justify-between">
+                <span>العربية</span>
+                <span class="text-xs font-mono text-gray-400">AR</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function googleTranslateElementInit() {
+        try {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,es,fr,de,ru,ar',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
+        } catch (e) {
+            console.error("Google Translate Init Error:", e);
+        }
+    }
+
+    function toggleLangMenu(e) {
+        if (e) e.stopPropagation();
+        const popover = document.getElementById('lang-popover');
+        if (popover) {
+            popover.classList.toggle('hidden');
+            if (!popover.classList.contains('hidden')) {
+                popover.classList.add('flex');
+            } else {
+                popover.classList.remove('flex');
+            }
+        }
+    }
+
+    function switchLang(lang) {
+        const prevLang = localStorage.getItem('selected_lang') || 'en';
+        localStorage.setItem('prev_lang', prevLang);
+        localStorage.setItem('selected_lang', lang);
+        
+        const clearCookie = (name, domain) => {
+            let cookieStr = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            if (domain) cookieStr += " domain=" + domain + ";";
+            document.cookie = cookieStr;
+            document.cookie = cookieStr + " SameSite=None; Secure;";
+        };
+
+        clearCookie('googtrans');
+        clearCookie('googtrans', window.location.hostname);
+        clearCookie('googtrans', '.' + window.location.hostname);
+        
+        const parts = window.location.hostname.split('.');
+        if (parts.length > 2) {
+            const mainDomain = parts.slice(-2).join('.');
+            clearCookie('googtrans', mainDomain);
+            clearCookie('googtrans', '.' + mainDomain);
+        }
+
+        if (lang !== 'en') {
+            const setCookie = (value, domain) => {
+                let base = "googtrans=" + value + "; path=/; SameSite=None; Secure;";
+                if (domain) base += " domain=" + domain + ";";
+                document.cookie = base;
+            };
+            
+            setCookie('/en/' + lang);
+            setCookie('/en/' + lang, window.location.hostname);
+            setCookie('/en/' + lang, '.' + window.location.hostname);
+            if (parts.length > 2) {
+                const mainDomain = parts.slice(-2).join('.');
+                setCookie('/en/' + lang, mainDomain);
+                setCookie('/en/' + lang, '.' + mainDomain);
+            }
+        }
+
+        const select = document.querySelector('#google_translate_element select') || document.querySelector('.goog-te-combo');
+        if (select) {
+            select.value = lang;
+            select.dispatchEvent(new Event('change'));
+        }
+        setTimeout(() => {
+            window.location.reload();
+        }, 120);
+    }
+
+    document.addEventListener('click', (e) => {
+        const langPopover = document.getElementById('lang-popover');
+        const langBtn = document.getElementById('lang-menu-btn');
+        if (langPopover && !langPopover.classList.contains('hidden') && langBtn && !langBtn.contains(e.target) && !langPopover.contains(e.target)) {
+            langPopover.classList.add('hidden');
+            langPopover.classList.remove('flex');
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>

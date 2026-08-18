@@ -2,10 +2,10 @@
 ====================================================================================================
                             ToolIMG - OFFICIAL HEADER TEMPLATE (header.html)
 ====================================================================================================
-Aap is code ko kisi bhi naye tool ke index.html ke top me (inside 
+-->
+
     <!-- Universal 4px Border Radius Override -->
     <style id="universal-border-radius-override">
-        /* Make all edgy elements styled with rounded-none have a 4px border-radius */
         .rounded-none, 
         [class*="rounded-none"], 
         [class*="rounded-l-none"], 
@@ -15,7 +15,6 @@ Aap is code ko kisi bhi naye tool ke index.html ke top me (inside
             border-radius: 4px !important;
         }
         
-        /* Apply 4px border-radius to default edgy components unless they are explicitly rounded-full */
         button:not(.rounded-full):not([class*="rounded-full"]), 
         input:not(.rounded-full):not([class*="rounded-full"]), 
         select:not(.rounded-full):not([class*="rounded-full"]), 
@@ -28,14 +27,7 @@ Aap is code ko kisi bhi naye tool ke index.html ke top me (inside
         }
     </style>
 
-<body>, before <main>) paste kar sakte hain. 
-Isme Header, Mobile Menu Drawer, Translate Widget, aur complete Auth Integration (Firebase) 
-homepage ke jaisa ekdam perfectly setup hain.
-====================================================================================================
--->
-
 <style>
-    /* Robust responsive styling to prevent any layout/Tailwind conflicts on mobile vs desktop */
     @media (max-width: 767px) {
         #header-auth-guest {
             display: none !important;
@@ -51,15 +43,33 @@ homepage ke jaisa ekdam perfectly setup hain.
     }
 </style>
 
-<!-- Google Translate Hidden Container -->
-<div id="google_translate_element" style="display: none;"></div>
+<!-- Google Translate Hidden Container & Hreflang -->
+<link rel="alternate" hreflang="en" href="https://toolimg.online/" />
+<link rel="alternate" hreflang="es" href="https://toolimg.online/es/" />
+<link rel="alternate" hreflang="fr" href="https://toolimg.online/fr/" />
+<link rel="alternate" hreflang="de" href="https://toolimg.online/de/" />
+<link rel="alternate" hreflang="ru" href="https://toolimg.online/ru/" />
+<link rel="alternate" hreflang="ar" href="https://toolimg.online/ar/" />
+<link rel="alternate" hreflang="x-default" href="https://toolimg.online/" />
+
+<div id="google_translate_element" style="display: none !important;"></div>
+
+<style>
+    .goog-te-banner-frame { display: none !important; }
+    body { top: 0px !important; }
+    .skiptranslate { display: none !important; }
+    #goog-gt-tt { display: none !important; visibility: hidden !important; }
+    .goog-tooltip { display: none !important; }
+    .goog-tooltip:hover { display: none !important; }
+    .goog-text-highlight { background-color: transparent !important; border: none !important; box-shadow: none !important; }
+</style>
 
 <!-- Navbar Header -->
 <header class="w-full max-w-[85vw] mx-auto px-4 sm:px-6 py-4 flex justify-between items-center bg-white/80 dark:bg-black/80 backdrop-blur-md sticky top-4 z-40 shadow-sm rounded-none mb-8 transition-colors">
     <div class="flex items-center gap-2 w-full justify-between">
         <!-- Logo -->
         <a href="/" class="flex items-center gap-2" style="display: flex !important; align-items: center !important; gap: 8px !important; text-decoration: none !important;">
-            <img src="https://timetablecreator.online/blog/wp-content/uploads/2026/08/logo.png" alt="ToolIMG Logo" class="h-8 w-auto">
+            <img src="/logo.png" alt="ToolIMG Logo" class="h-8 w-auto">
             <span class="font-bold text-xl tracking-tight text-black dark:text-gray-100">Tool<span class="text-black dark:text-black">IMG</span></span>
         </a>
         
@@ -88,14 +98,32 @@ homepage ke jaisa ekdam perfectly setup hain.
                 </button>
                 
                 <!-- Language Dropdown Menu -->
-                <div id="lang-popover" class="hidden absolute right-0 mt-2 w-40 bg-white dark:bg-black rounded-none shadow-lg flex-col z-50 overflow-hidden border border-gray-200 dark:border-neutral-800">
-                    <div class="py-2">
-                        <button type="button" onclick="switchLang('en')" class="w-full text-left block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-[#fafafa] dark:hover:bg-neutral-900 transition">English</button>
-                        <button type="button" onclick="switchLang('es')" class="w-full text-left block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-[#fafafa] dark:hover:bg-neutral-900 transition">Español</button>
-                        <button type="button" onclick="switchLang('fr')" class="w-full text-left block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-[#fafafa] dark:hover:bg-neutral-900 transition">Français</button>
-                        <button type="button" onclick="switchLang('de')" class="w-full text-left block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-[#fafafa] dark:hover:bg-neutral-900 transition">Deutsch</button>
-                        <button type="button" onclick="switchLang('ru')" class="w-full text-left block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-[#fafafa] dark:hover:bg-neutral-900 transition">Русский</button>
-                        <button type="button" onclick="switchLang('ar')" class="w-full text-left block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-[#fafafa] dark:hover:bg-neutral-900 transition">العربية</button>
+                <div id="lang-popover" class="hidden absolute right-0 mt-2 w-44 bg-white dark:bg-black rounded-none shadow-xl flex-col z-[99999] overflow-hidden border border-gray-200 dark:border-neutral-800 py-1">
+                    <div class="py-1">
+                        <button type="button" onclick="switchLang('en')" class="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-[#fafafa] dark:hover:bg-neutral-900 transition flex items-center justify-between">
+                            <span>English</span>
+                            <span class="text-xs font-mono text-gray-400">EN</span>
+                        </button>
+                        <button type="button" onclick="switchLang('es')" class="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-[#fafafa] dark:hover:bg-neutral-900 transition flex items-center justify-between">
+                            <span>Español</span>
+                            <span class="text-xs font-mono text-gray-400">ES</span>
+                        </button>
+                        <button type="button" onclick="switchLang('fr')" class="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-[#fafafa] dark:hover:bg-neutral-900 transition flex items-center justify-between">
+                            <span>Français</span>
+                            <span class="text-xs font-mono text-gray-400">FR</span>
+                        </button>
+                        <button type="button" onclick="switchLang('de')" class="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-[#fafafa] dark:hover:bg-neutral-900 transition flex items-center justify-between">
+                            <span>Deutsch</span>
+                            <span class="text-xs font-mono text-gray-400">DE</span>
+                        </button>
+                        <button type="button" onclick="switchLang('ru')" class="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-[#fafafa] dark:hover:bg-neutral-900 transition flex items-center justify-between">
+                            <span>Русский</span>
+                            <span class="text-xs font-mono text-gray-400">RU</span>
+                        </button>
+                        <button type="button" onclick="switchLang('ar')" class="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-[#fafafa] dark:hover:bg-neutral-900 transition flex items-center justify-between">
+                            <span>العربية</span>
+                            <span class="text-xs font-mono text-gray-400">AR</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -128,6 +156,7 @@ homepage ke jaisa ekdam perfectly setup hain.
                         <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 00-1-1v-4a1 1 0 011-1h2a1 1 0 001 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                         <span>Dashboard</span>
                     </a>
+                    <!-- Restored History Option in Header User Dropdown -->
                     <button type="button" onclick="if(window.openHistoryDrawer){window.openHistoryDrawer();}toggleUserDropdown();" class="w-full text-left flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-[#fafafa] dark:hover:bg-neutral-900 transition cursor-pointer">
                         <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         <span>History</span>
@@ -158,7 +187,7 @@ homepage ke jaisa ekdam perfectly setup hain.
         <!-- Close & Logo Header -->
         <div class="flex items-center justify-between px-6 py-5 border-b border-black/5 dark:border-gray-800">
             <a href="/" class="flex items-center gap-2">
-                <img src="https://timetablecreator.online/blog/wp-content/uploads/2026/08/logo.png" alt="ToolIMG Logo" class="h-7 w-auto logo-img">
+                <img src="/logo.png" alt="ToolIMG Logo" class="h-7 w-auto logo-img">
                 <span class="font-bold text-lg text-black dark:text-gray-100 tracking-tight">Tool<span class="text-black dark:text-black">IMG</span></span>
             </a>
             <button id="mobile-menu-close" class="text-slate-400 hover:text-gray-600 dark:hover:text-slate-300 transition p-1 rounded-none hover:bg-[#fafafa] dark:hover:bg-black cursor-pointer" aria-label="Close Mobile Menu">
@@ -188,6 +217,7 @@ homepage ke jaisa ekdam perfectly setup hain.
                     <div class="w-7 h-7 rounded-none bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-indigo-600 dark:text-indigo-400 text-xs font-bold font-mono">U</div>
                     <span id="mobile-username" class="text-sm font-semibold text-gray-700 dark:text-gray-300 truncate">User Profile</span>
                 </div>
+                <button onclick="if(window.openHistoryDrawer){window.openHistoryDrawer();}" class="w-full py-2.5 text-center text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-neutral-900 rounded-none transition cursor-pointer border border-gray-200 dark:border-neutral-800 mb-1">View History</button>
                 <button onclick="handleLogout()" class="w-full py-2.5 text-center text-sm font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/20 rounded-none transition cursor-pointer border border-rose-100 dark:border-rose-950/30">Logout</button>
             </div>
         </div>
@@ -200,11 +230,16 @@ homepage ke jaisa ekdam perfectly setup hain.
      =================================================================== -->
 <script>
     function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-            pageLanguage: 'en',
-            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-            autoDisplay: false
-        }, 'google_translate_element');
+        try {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,es,fr,de,ru,ar',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
+        } catch (e) {
+            console.error("Google Translate Init Error:", e);
+        }
     }
 
     function toggleLangMenu(e) {
@@ -333,7 +368,7 @@ homepage ke jaisa ekdam perfectly setup hain.
 <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 <!-- ===================================================================
-              4. FIREBASE AUTHENTICATION & CREDIT STATE SYNCHRONIZATION
+              FIREBASE AUTHENTICATION & CREDIT STATE SYNCHRONIZATION
      =================================================================== -->
 <script type="module">
     import { auth, db } from '/assets/firebase-config.js';
@@ -357,7 +392,13 @@ homepage ke jaisa ekdam perfectly setup hain.
                 await signInWithRedirect(auth, provider);
             } catch (redirectError) {
                 console.error("Login redirect failed:", redirectError);
-                alert("Login failed: " + (redirectError.message || error.message));
+                if (redirectError.code === 'auth/network-request-failed' || (redirectError.message && redirectError.message.includes('network-request-failed'))) {
+                    if (confirm("Google Sign-In requires third-party cookies or direct connection which may be restricted inside this preview frame. Would you like to open this application in a new tab to sign in smoothly?")) {
+                        window.open(window.location.href, '_blank');
+                    }
+                } else {
+                    alert("Login failed: " + (redirectError.message || error.message));
+                }
             }
         }
     };
